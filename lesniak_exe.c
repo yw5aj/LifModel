@@ -1,4 +1,5 @@
 #include <stdio.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
@@ -20,6 +21,8 @@ void get_spike_trace_array_lif(double resistance_input, double capacitance_input
 	double dt_input, int *spike_trace_array);
 double rk4(double y_old, size_t time_index, double (*dydt)(double, double));
 double get_d_voltage_d_time(double time_index, double voltage);
+double gaussian_noise(double mean, double std);
+
 
 void main()
 {
@@ -148,3 +151,22 @@ double get_d_voltage_d_time(double time_index, double voltage)
 	return d_voltage_d_time;
 }
 
+
+double gaussian_noise(double mean, double std)
+{
+    static int have_spare = 0;
+    static double u1, u2, z1, z2;
+    if(have_spare)
+    {
+        have_spare = 0;
+        z2 = sqrt(-2. * log(u1)) * sin(2. * M_PI * u2);
+        return mean + std * z2;
+    }
+    have_spare = 1;
+    do {
+        u1 = ((double) rand() / RAND_MAX);
+    } while (u1 == 0.);
+    u2 = ((double) rand() / RAND_MAX);
+    z1 = sqrt(-2. * log(u1)) * cos(2. * M_PI * u2);
+    return mean + std * z1;
+}
