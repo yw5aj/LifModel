@@ -152,7 +152,7 @@ double get_d_voltage_d_time(double time_index, double voltage)
 }
 
 
-double gaussian_noise(double mean, double std)
+double gaussian_noise(const double mean, const double std)
 {
     static int have_spare = 0;
     static double u1, u2, z1, z2;
@@ -163,10 +163,8 @@ double gaussian_noise(double mean, double std)
         return mean + std * z2;
     }
     have_spare = 1;
-    do {
-        u1 = ((double) rand() / RAND_MAX);
-    } while (u1 == 0.);
-    u2 = ((double) rand() / RAND_MAX);
+    u1 = ((double) (rand() + 1) / (RAND_MAX + 1));
+    u2 = ((double) (rand() + 1) / (RAND_MAX + 1));
     z1 = sqrt(-2. * log(u1)) * cos(2. * M_PI * u2);
     return mean + std * z1;
 }
