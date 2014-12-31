@@ -41,3 +41,20 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# archive folder
+archive*
+
+# MSVC artifact
+*.dll
+*.exe
+*.obj
+*.pdb
+*.tlog
+*.manifest
+*.vcx*
+*.exp
+*.lastbuild*
+*.idb
+*.log
+*.lib
