@@ -41,7 +41,7 @@ void get_spike_trace_array_lif(double resistance_input, double capacitance_input
 	dydt = &get_d_voltage_d_time;
 	// Get the output value
 	voltage_old = 0.;
-	for(i=1; i<current_length; i++)
+	for(i=1; i<current_length-1; i++)
 	{
 		voltage_new = rk4(voltage_old, i, dydt);
 		if(voltage_new>voltage_threshold)
