@@ -1,5 +1,4 @@
 #include <stdio.h>
-#define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
@@ -22,7 +21,6 @@ void get_spike_trace_array_lesniak(const double resistance_input, const double c
     const int mcnc_group_no, const int *mcnc_grouping);
 double rk4(const double y_old, const size_t time_index, const double (*dydt)(double, double, int), const int mcnc_group_id);
 double get_d_voltage_d_time(const double time_index, const double voltage, const int mcnc_group_id);
-double gaussian_noise(const double mean, const double std);
 
 
 void main()
@@ -178,22 +176,4 @@ double get_d_voltage_d_time(const double time_index, const double voltage, const
 	current = .5 * current_array[(size_t)floor(time_index)][mcnc_group_id] + .5 * current_array[(size_t)ceil(time_index)][mcnc_group_id];
 	d_voltage_d_time = -1. / (resistance * capacitance) * voltage + current / capacitance;
 	return d_voltage_d_time;
-}
-
-
-double gaussian_noise(const double mean, const double std)
-{
-    static int have_spare = 0;
-    static double u1, u2, z1, z2;
-    if(have_spare)
-    {
-        have_spare = 0;
-        z2 = sqrt(-2. * log(u1)) * sin(2. * M_PI * u2);
-        return mean + std * z2;
-    }
-    have_spare = 1;
-    u1 = ((double) (rand() + 1) / (RAND_MAX + 1));
-    u2 = ((double) (rand() + 1) / (RAND_MAX + 1));
-    z1 = sqrt(-2. * log(u1)) * cos(2. * M_PI * u2);
-    return mean + std * z1;
 }
