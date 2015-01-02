@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import ctypes
 
-# Load dll for LIF model
+# Load dll for Lesniak model
 _get_spike_trace_array_lesniak = ctypes.cdll.LoadLibrary('./lesniak_dll.dll'
     ).get_spike_trace_array_lesniak
 _get_spike_trace_array_lesniak.argtypes = [ctypes.c_double, ctypes.c_double,
@@ -12,12 +12,14 @@ _get_spike_trace_array_lesniak.argtypes = [ctypes.c_double, ctypes.c_double,
 _get_spike_trace_array_lesniak.restype = None
 
 # SI units
-DT = 1E-5 # sec
-RESISTANCE_LIF = 10 * 5e8 # ohm
+DT = 1E-4 # sec
+RESISTANCE_LIF = 1 * 5e8 # ohm
 CAPACITANCE_LIF = 1e-11 # F
-VOLTAGE_THRESHOLD_LIF = 30e-3 # V
+VOLTAGE_THRESHOLD_LIF = 29e-3 # V
 
 def current_array_to_spike_array(current_array, mcnc_grouping):
+    if not current_array.flags['C_CONTIGUOUS']:
+        current_array = current_array.copy(order='C')
     # Initialize output array
     spike_array = np.zeros(current_array.shape[0], dtype=np.int)
     # Call C function
@@ -32,5 +34,7 @@ def current_array_to_spike_array(current_array, mcnc_grouping):
 if __name__ == '__main__':
     mcnc_grouping = np.array([8, 5, 3, 1])
     current_array = np.loadtxt('../test/csvs/trans_current.csv', delimiter=','
-        )[:, 1:].copy()
+        )[:, 1:]
     a = current_array_to_spike_array(current_array, mcnc_grouping)
+    plt.plot(a)
+    plt.ylim(-1, 2)

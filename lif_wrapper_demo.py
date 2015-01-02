@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def get_spike_trace_array_lif(resistance_lif, capacitance_lif, voltage_threshold_lif, current_array_lif, dt_lif):
+    if not current_array_lif.flags['C_CONTIGUOUS']:
+        current_array_lif = current_array_lif.copy(order='C')
     _get_spike_trace_array_lif = ctypes.cdll.LoadLibrary('./lif_dll.dll').get_spike_trace_array_lif
     _get_spike_trace_array_lif.argtypes = [ctypes.c_double, ctypes.c_double, ctypes.c_double, np.ctypeslib.ndpointer(ctypes.c_double), ctypes.c_int, ctypes.c_double, np.ctypeslib.ndpointer(ctypes.c_int)]
     _get_spike_trace_array_lif.restype = None
@@ -17,7 +19,6 @@ if __name__ == '__main__':
     time_array_lif, current_array_lif = np.genfromtxt('../test/csvs/test_current.csv', delimiter=',').T
     time_array_lif *= 1e-3 # Convert ms to sec
     current_array_lif *= 1e-3 # Convert mA to A
-    current_array_lif = current_array_lif.copy()
     # Input LIF parameters
     resistance_lif = 5e8 # ohm
     capacitance_lif = 1e-11 # F
