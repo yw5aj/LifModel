@@ -75,6 +75,8 @@ void get_spike_trace_array_lesniak(const double resistance_input, const double c
             }
 		}
 	}
+	free(voltage_old);
+	free(voltage_new);
 	return;
 }
 
